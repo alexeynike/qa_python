@@ -1,24 +1,55 @@
-from main import BooksCollector
-
-# класс TestBooksCollector объединяет набор тестов, которыми мы покрываем наше приложение BooksCollector
-# обязательно указывать префикс Test
 class TestBooksCollector:
 
-    # пример теста:
-    # обязательно указывать префикс test_
-    # дальше идет название метода, который тестируем add_new_book_
-    # затем, что тестируем add_two_books - добавление двух книг
-    def test_add_new_book_add_two_books(self):
-        # создаем экземпляр (объект) класса BooksCollector
-        collector = BooksCollector()
+    def test_add_new_book_add_two_book(self, create_books_collector, create_book):
+        create_books_collector.add_new_book('Что делать, если ваш кот хочет вас убить')
+        assert len(create_books_collector.get_books_genre()) == 2
 
-        # добавляем две книги
-        collector.add_new_book('Гордость и предубеждение и зомби')
-        collector.add_new_book('Что делать, если ваш кот хочет вас убить')
+    def test_set_book_genre_set_genre(self, create_books_collector, create_book):
+        name = create_book
+        genre = 'Детективы'
+        create_books_collector.set_book_genre(name, genre)
+        assert create_books_collector.get_book_genre(name) == genre
 
-        # проверяем, что добавилось именно две
-        # словарь books_rating, который нам возвращает метод get_books_rating, имеет длину 2
-        assert len(collector.get_books_rating()) == 2
+    def test_set_book_genre_without_genre(self, create_books_collector, create_book):
+        name = create_book
+        assert not create_books_collector.get_book_genre(name)
 
-    # напиши свои тесты ниже
-    # чтобы тесты были независимыми в каждом из них создавай отдельный экземпляр класса BooksCollector()
+    def test_set_book_with_specific_genre(self, create_books_collector, create_book):
+        name = create_book
+        genre = 'Детективы'
+        create_books_collector.set_book_genre(name, genre)
+        assert len(create_books_collector.get_books_with_specific_genre(genre)) == 1
+
+    def test_set_book_with_specific_genre_negative(self, create_books_collector, create_book):
+        genre = 'Детективы'
+        assert len(create_books_collector.get_books_with_specific_genre(genre)) == 0
+
+    def test_get_books_genre_for_empty_books_genre(self,create_books_collector):
+        assert len(create_books_collector.get_books_genre()) == 0
+
+    def test_get_books_not_for_children(self, create_books_collector, create_book):
+        book = create_book
+        genre = 'Ужасы'
+        create_books_collector.add_new_book('Test book')
+        create_books_collector.set_book_genre(book, genre)
+        create_books_collector.set_book_genre('Test book', 'Мультфильмы')
+        assert len(create_books_collector.get_books_for_children()) == 1
+
+    def test_add_book_in_favorites_add_book(self, create_books_collector, create_book):
+        book = create_book
+        create_books_collector.add_book_in_favorites(book)
+        assert len(create_books_collector.favorites) == 1
+
+    def test_add_book_in_favorites_check_default(self, create_books_collector, create_book):
+        assert len(create_books_collector.favorites) == 0
+
+    def test_delete_book_from_favorites(self, create_books_collector, create_book):
+        book = create_book
+        create_books_collector.add_book_in_favorites(book)
+        create_books_collector.delete_book_from_favorites(book)
+        assert len(create_books_collector.favorites) == 0
+
+    def test_get_list_of_favorites_books_get_favorites(self, create_books_collector, create_book):
+        book = create_book
+        create_books_collector.add_book_in_favorites(book)
+        assert create_books_collector.get_list_of_favorites_books() == [book]
