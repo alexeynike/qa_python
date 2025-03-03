@@ -1,24 +1,7 @@
-import pytest
-
-from main import BooksCollector
-
-
 class TestBooksCollector:
 
-    @pytest.fixture
-    def create_books_collector(self):
-        return BooksCollector()
-
-    @pytest.fixture
-    def create_book(self, create_books_collector):
-        name = 'Война и мир'
-        create_books_collector.add_new_book(name)
-        return name
-
-    def test_add_new_book_add_two_books(self, create_books_collector, create_book):
-
+    def test_add_new_book_add_two_book(self, create_books_collector, create_book):
         create_books_collector.add_new_book('Что делать, если ваш кот хочет вас убить')
-
         assert len(create_books_collector.get_books_genre()) == 2
 
     def test_set_book_genre_set_genre(self, create_books_collector, create_book):
